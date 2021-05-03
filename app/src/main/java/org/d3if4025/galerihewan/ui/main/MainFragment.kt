@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.d3if4025.galerihewan.model.Hewan
 import org.d3if4025.galerihewan.R
 import org.d3if4025.galerihewan.databinding.FragmentMainBinding
+import org.d3if4025.galerihewan.network.ApiStatus
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -43,6 +44,25 @@ class MainFragment : Fragment() {
         viewModel.getData().observe(viewLifecycleOwner, {
             myAdapter.updateData(it)
         })
+
+        viewModel.getStatus().observe(viewLifecycleOwner, {
+            updateProgress(it)
+        })
+    }
+
+    private  fun updateProgress(status: ApiStatus) {
+        when (status) {
+            ApiStatus.LOADING -> {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+            ApiStatus.SUCCESS -> {
+                binding.progressBar.visibility = View.GONE
+            }
+            ApiStatus.FAILED -> {
+                binding.progressBar.visibility = View.GONE
+                binding.networkError.visibility = View.VISIBLE
+            }
+        }
     }
 
 }
